@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location Based Attendance</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 350px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    button {
+      padding: 12px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .alert {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Attendance System</h2>
+    <button onclick="markAttendance()">Mark Attendance</button>
+    <div id="alertBox" class="alert"></div>
+  </div>
+
+  <script>
+    // Polygon coordinates (your class boundary)
+    const allowedArea = turf.polygon([[
+      [77.5946, 12.9716], // Location 1
+      [80.2707, 13.0827], // Location 2
+      [72.8777, 19.0760], // Location 3
+      [77.1025, 28.7041], // Location 4
+      [77.5946, 12.9716]  // close polygon
+    ]]);
+
+    function markAttendance() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+      } else {
+        showAlert("Geolocation is not supported by your browser.", "error");
+      }
+    }
+
+    function success(position) {
+      const userLocation = turf.point([position.coords.longitude, position.coords.latitude]);
+      const inside = turf.booleanPointInPolygon(userLocation, allowedArea);
+
+      if (inside) {
+        showAlert("✅ Attendance is noted!", "success");
+      } else {
+        showAlert("❌ You are not in the class!", "error");
+      }
+    }
+
+    function error() {
+      showAlert("⚠️ Unable to retrieve your location.", "error");
+    }
+
+    function showAlert(message, type) {
+      const alertBox = document.getElementById("alertBox");
+      alertBox.innerText = message;
+      alertBox.className = "alert " + type;
+      alertBox.style.display = "block";
+    }
+  </script>
+</body>
+</html>
