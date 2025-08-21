@@ -1,6 +1,6 @@
 <p align="center">
   
-  <h1>Location-Based Attendance System</h1>
+  <h1>LLOCATION BASED ATTENDANCE SYSTEM</h1>
 </p>
 
 Welcome to the **Location-Based Attendance System**!  
