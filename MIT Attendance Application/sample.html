@@ -1,110 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Location Based Attendance</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 350px;
-    }
-    h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-    button {
-      padding: 12px 20px;
-      border: none;
-      background: #007bff;
-      color: white;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    .alert {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      font-weight: bold;
-      display: none;
-    }
-    .success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location-Based Attendance</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 { color: #333; }
+        p { color: #555; }
+        #attendance-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        #attendance-btn:hover { background-color: #0056b3; }
+        #message {
+            margin-top: 25px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        #accuracy-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Attendance System</h2>
-    <button onclick="markAttendance()">Mark Attendance</button>
-    <div id="alertBox" class="alert"></div>
-  </div>
 
-  <script>
-    // Polygon coordinates (your class boundary)
-    const allowedArea = turf.polygon([[
-      [77.5946, 12.9716], // Location 1
-      [80.2707, 13.0827], // Location 2
-      [72.8777, 19.0760], // Location 3
-      [77.1025, 28.7041], // Location 4
-      [77.5946, 12.9716]  // close polygon
-    ]]);
+    <h1>Classroom Attendance Marker</h1>
+    <p>Click the button below to mark your attendance.</p>
+    <button id="attendance-btn">Mark Attendance</button>
+    <p id="message"></p>
+    <p id="accuracy-info"></p>
 
-    function markAttendance() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error);
-      } else {
-        showAlert("Geolocation is not supported by your browser.", "error");
-      }
-    }
+    <script>
+        // 1. UPDATED CLASSROOM LOCATION AND RADIUS
+        const classCenterLocation = {
+            latitude: 12.942940,
+            longitude: 80.136853
+        };
 
-    function success(position) {
-      const userLocation = turf.point([position.coords.longitude, position.coords.latitude]);
-      const inside = turf.booleanPointInPolygon(userLocation, allowedArea);
+        const allowedRadius = 60; // Radius is now set to 60 meters for accuracy reasons
 
-      if (inside) {
-        showAlert("✅ Attendance is noted!", "success");
-      } else {
-        showAlert("❌ You are not in the class!", "error");
-      }
-    }
+        const attendanceBtn = document.getElementById('attendance-btn');
+        const messageDiv = document.getElementById('message');
+        const accuracyDiv = document.getElementById('accuracy-info');
 
-    function error() {
-      showAlert("⚠️ Unable to retrieve your location.", "error");
-    }
+        attendanceBtn.addEventListener('click', () => {
+            messageDiv.textContent = "Requesting your location...";
+            accuracyDiv.textContent = "";
+            messageDiv.style.color = 'navy';
 
-    function showAlert(message, type) {
-      const alertBox = document.getElementById("alertBox");
-      alertBox.innerText = message;
-      alertBox.className = "alert " + type;
-      alertBox.style.display = "block";
-    }
-  </script>
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(success, error, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            } else {
+                messageDiv.textContent = "Geolocation is not supported by your browser.";
+                messageDiv.style.color = 'red';
+            }
+        });
+
+        function success(position) {
+            const userLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+            const accuracy = position.coords.accuracy;
+
+            const distance = calculateDistance(userLocation, classCenterLocation);
+
+            accuracyDiv.textContent = `(Your location accuracy is ~${accuracy.toFixed(0)} meters)`;
+
+            // Check if the user is within the 60-meter radius
+            if (distance <= allowedRadius) {
+                messageDiv.textContent = "✅ Attendance Marked Successfully!";
+                messageDiv.style.color = 'green';
+            } else {
+                messageDiv.textContent = `❌ You are not in the classroom. You are ${distance.toFixed(1)} meters away.`;
+                messageDiv.style.color = 'red';
+            }
+        }
+
+        function error(err) {
+            messageDiv.textContent = `ERROR: ${err.message}`;
+            messageDiv.style.color = 'red';
+            accuracyDiv.textContent = "";
+        }
+
+        function calculateDistance(coords1, coords2) {
+            const R = 6371e3; // Earth's radius in meters
+            const lat1 = coords1.latitude * Math.PI / 180;
+            const lat2 = coords2.latitude * Math.PI / 180;
+            const deltaLat = (coords2.latitude - coords1.latitude) * Math.PI / 180;
+            const deltaLon = (coords2.longitude - coords1.longitude) * Math.PI / 180;
+            const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                      Math.cos(lat1) * Math.cos(lat2) *
+                      Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+    </script>
 </body>
 </html>
