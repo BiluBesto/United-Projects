@@ -20,8 +20,10 @@ This project is an intelligent attendance solution that leverages geolocation to
 ```
 attendance-system/
 │
-├── src
-│   ├── AttendanceSystem.java
+├── MIT attendance Application
+│   ├── submit.php
+│   ├── sample.html
+│   ├── index.html
 │   └── To be continued
 │
 ├── README.md
