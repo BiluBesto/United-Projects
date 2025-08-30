@@ -9,8 +9,8 @@ This project is an intelligent attendance solution that leverages geolocation to
 
 ## 📚 About
 
-- **Purpose:** Ensure authentic attendance by verifying user presence at specific locations.
-- **Key Feature:** Attendance can only be marked when the user's device is detected within any one of the authorized coordinate sets.
+- **Purpose:** Allow staff to dynamically create location-based attendance sessions.
+-**Key Feature:** Attendance is marked only if students are within the specified radius of the defined location.
 - **Audience:** Suitable for colleges, offices, field staff tracking, events, or any scenario requiring location-based verification.
 
 ---
@@ -18,82 +18,46 @@ This project is an intelligent attendance solution that leverages geolocation to
 ## 🗂️ Repository Structure
 
 ```
-attendance-system/
+attendance-system-web/
 │
-├── src
-│   ├── AttendanceSystem.java
-│   └── To be continued
-│
-├── README.md
+├── index.html       # Landing page
+├── host.html        # Staff portal to generate attendance link
+├── student.html     # Student portal to mark attendance
+├── register.html    # Student registration page
+├── style.css        # Stylesheet for all pages
+└── app.js
 ```
 
 ---
 
 ## 🚀 Features
 
-- **Geolocation Validation:** Only marks attendance if user is within the allowed coordinate sets.
-- **Configurable Locations:** Four location sets are hardcoded or can be configured.
-- **User Authentication:** Ensures only registered users can mark attendance.
-- **Simple Interface:** Easy-to-use prompts for users to attempt marking attendance.
-- **Attendance Logs:** Keeps track of successful attendance records.
+**Dynamic Location Validation:** Staff enter latitude, longitude, and radius for attendance sessions.
 
+**Link Generation:** Generates a unique link for students to mark attendance.
+
+**Student Registration:** Students register with their unique registration number.
+
+**Real-Time Tracking:** Attendance automatically appears on the staff portal.
+
+**User-Friendly Interface:** Clean, responsive web pages for staff and students.
 ---
 
 ## 🗺️ How It Works
 
-1. **User Authentication:**  
-   User logs in or identifies themselves.
+**Staff Portal (host.html):**
+Staff enters a location and radius → generates a unique attendance link.
 
-2. **Location Check:**  
-   The system fetches the user's current location (latitude, longitude).
+**Link Sharing:**
+The attendance link is shared with students.
 
-3. **Verification:**  
-   If the user's coordinates match any of the four authorized sets (within a small margin for GPS accuracy), attendance is marked.
+**Student Portal (student.html):**
+Students open the link → enter registration number → system validates their current location.
 
-4. **Record:**  
-   The attendance is logged for that user.
-
+**Attendance Recording:**
+If the student is within the valid radius, attendance is marked and reflected in real-time on the staff portal.
 ---
 
-## 📖 Example Coordinate Sets
-
-| Location Name | Latitude | Longitude |
-|---------------|----------|-----------|
-| Location 1    | 12.9716  | 77.5946   |
-| Location 2    | 13.0827  | 80.2707   |
-| Location 3    | 19.0760  | 72.8777   |
-| Location 4    | 28.7041  | 77.1025   |
-
-*(Just a sample coordinates.)*
-
----
-
-## 🏁 How to Run
-
-1. **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/attendance-system.git
-    ```
-2. **Navigate to the source directory:**
-    ```bash
-    cd attendance-system/src
-    ```
-3. **Compile and run:**
-    ```bash
-    javac AttendanceSystem.java
-    java AttendanceSystem
-    ```
-
----
-
-## 🤝 Contributing
-
-Contributions and improvements are welcome!  
-- Fork the repo
-- Create a feature branch
-- Submit a pull request
-
----
 ## SCREENSHOT
 
 <img width="713" height="747" alt="image" src="https://github.com/user-attachments/assets/8877516a-83bd-41e6-8660-ade5f25bc4af" />
