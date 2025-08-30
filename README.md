@@ -6,7 +6,6 @@ Welcome to the **LOCATION BASED ATTENDANCE SYSTEM**!
 This project is an intelligent attendance solution that leverages geolocation to mark user attendance only when they are within one of four predefined sets of coordinates (locations).
 <hr/>
 
----
 
 ## 📚 About
 
