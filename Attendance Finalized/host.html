@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container host-dashboard">
+        <div class="host-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p class="subtitle" style="margin: 0;">Welcome, <span id="host-username"></span>!</p>
+            </div>
+            <button id="logout-btn" class="btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="session-creator">
+            <div class="input-group">
+                <label for="course-name">Course Name</label>
+                <input type="text" id="course-name" placeholder="e.g., Quantum Physics 101">
+            </div>
+            <div class="input-group">
+                <label for="radius">Radius (meters)</label>
+                <input type="number" id="radius" placeholder="e.g., 50">
+            </div>
+            <button id="create-session-btn" class="btn" onclick="createSession()">Start Session</button>
+        </div>
+
+        <div id="session-link-container" class="hidden">
+            <strong>Session Active! Share Link:</strong>
+            <p><a href="#" id="attendance-link" target="_blank"></a></p>
+            <button id="copy-link-btn" class="btn" onclick="copyLink()">Copy</button>
+        </div>
+        
+        <div id="dashboard-grid" class="dashboard-grid">
+            <!-- Student cards will be dynamically inserted here -->
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

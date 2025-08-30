@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoAttend - Host Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome Back</h1>
+        <p class="subtitle">Log in to manage your attendance sessions.</p>
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+        <button class="btn" onclick="handleLogin()">Login</button>
+        <div id="alert-message" class="alert hidden"></div>
+        <p class="auth-link">No account yet? <a href="register.html">Register here</a>.</p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
