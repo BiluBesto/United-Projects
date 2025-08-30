@@ -1,0 +1,149 @@
+<!--Program to mark the attendence for student based on his/her live location-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Location-Based Attendance</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+      background-color: #f4f4f9;
+    }
+    h1 { color: #333; }
+    p { color: #555; }
+    #attendance-btn {
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    #attendance-btn:hover { background-color: #0056b3; }
+    #message {
+      margin-top: 25px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    #accuracy-info {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #888;
+    }
+    .success-glow {
+      animation: glow 1.5s ease-in-out infinite alternate;
+      color: #28a745;
+    }
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #28a745, 0 0 20px #28a745, 0 0 30px #28a745;
+      }
+      to {
+        text-shadow: 0 0 20px #28a745, 0 0 30px #28a745, 0 0 40px #28a745;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Classroom Attendance Marker</h1>
+  <p>Click the button below to mark your attendance.</p>
+  <button id="attendance-btn">Mark Attendance</button>
+  <p id="message"></p>
+  <p id="accuracy-info"></p>
+
+  <script>
+    const classCenterLocation = {
+      latitude: 12.942966759228167,
+      longitude: 80.13661781822535
+    };
+
+    const allowedRadius = 60; // meters
+    const attendanceBtn = document.getElementById('attendance-btn');
+    const messageDiv = document.getElementById('message');
+    const accuracyDiv = document.getElementById('accuracy-info');
+    let watchId;
+
+    attendanceBtn.addEventListener('click', () => {
+      messageDiv.textContent = "📡 Locating you with high precision...";
+      accuracyDiv.textContent = "";
+      messageDiv.style.color = 'navy';
+      messageDiv.classList.remove('success-glow');
+
+      if ('geolocation' in navigator) {
+        watchId = navigator.geolocation.watchPosition(success, error, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        });
+      } else {
+        messageDiv.textContent = "❌ Geolocation is not supported by your browser.";
+        messageDiv.style.color = 'red';
+      }
+    });
+
+    function success(position) {
+      const userLocation = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      };
+      const accuracy = position.coords.accuracy;
+      const distance = calculateDistance(userLocation, classCenterLocation);
+
+      console.log("📍 Your Location:", userLocation.latitude, userLocation.longitude);
+      console.log("📏 Distance from class:", distance.toFixed(2), "meters");
+
+      accuracyDiv.textContent = `(Location accuracy: ±${accuracy.toFixed(0)} meters)`;
+
+      if (accuracy > 100) {
+        messageDiv.textContent = `⚠️ Location too imprecise (±${accuracy.toFixed(0)}m). Try again or move to open sky.`;
+        messageDiv.style.color = 'orange';
+        navigator.geolocation.clearWatch(watchId);
+        return;
+      }
+
+      if (distance <= allowedRadius) {
+        messageDiv.textContent = "✅ Attendance Marked Successfully!";
+        messageDiv.classList.add('success-glow');
+        messageDiv.style.color = 'green';
+      } else {
+        messageDiv.textContent = `❌ You are not in the classroom. Distance: ${distance.toFixed(1)} meters.`;
+        messageDiv.style.color = 'red';
+      }
+
+      navigator.geolocation.clearWatch(watchId);
+    }
+
+    function error(err) {
+      messageDiv.textContent = `⚠️ ERROR: ${err.message}`;
+      messageDiv.style.color = 'red';
+      accuracyDiv.textContent = "";
+      navigator.geolocation.clearWatch(watchId);
+    }
+
+    function calculateDistance(coords1, coords2) {
+      const R = 6371e3; // Earth's radius in meters
+      const lat1 = coords1.latitude * Math.PI / 180;
+      const lat2 = coords2.latitude * Math.PI / 180;
+      const deltaLat = (coords2.latitude - coords1.latitude) * Math.PI / 180;
+      const deltaLon = (coords2.longitude - coords1.longitude) * Math.PI / 180;
+      const a = Math.sin(deltaLat / 2) ** 2 +
+                Math.cos(lat1) * Math.cos(lat2) *
+                Math.sin(deltaLon / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+  </script>
+</body>
+</html>
+<!--Unable to set the local user loaction accuratly-->
