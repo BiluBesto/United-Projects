@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoAttend - Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create Host Account</h1>
+        <p class="subtitle">Sign up to start creating sessions.</p>
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Choose a username">
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Create a password">
+        </div>
+        <button class="btn" onclick="handleRegister()">Create Account</button>
+        <div id="alert-message" class="alert hidden"></div>
+        <p class="auth-link">Already have an account? <a href="index.html">Login here</a>.</p>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
+<!--To register the staff into the class.Pending to make it more by selecting the time of session-->
